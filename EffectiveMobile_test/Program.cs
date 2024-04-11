@@ -57,21 +57,13 @@ namespace EffectiveMobile_test
     {
         public static bool IsValidIpAddress(string ipAddress)
         {
-            try
+            if (IPAddress.TryParse(ipAddress, out IPAddress ip))
             {
-                if (IPAddress.TryParse(ipAddress, out IPAddress ip))
-                {
-                    return true;
-                }
-                else
-                {
-                    throw new ArgumentException("Некорректный формат IP адреса.");
-                }
+                return true;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Ошибка: " + ex.Message);
-                return false;
+                throw new ArgumentException("Некорректный формат IP адреса.");
             }
         }
     }
@@ -79,17 +71,17 @@ namespace EffectiveMobile_test
     // Реализуем параметры командной строки
     class Options
     {
-        [Option("file-log", Required = true, HelpText = "путь к файлу с логами")]
+        [Option('l', "file-log", Required = true, HelpText = "путь к файлу с логами")]
         public string LogFile { get; set; }
 
-        [Option("file-output", Required = true, HelpText = "путь к файлу с результатом\r\n")]
+        [Option('o', "file-output", Required = true, HelpText = "путь к файлу с результатом\r\n")]
         public string OutputFile { get; set; }
 
-        [Option("address-start", Required = false, HelpText = "нижняя граница диапазона адресов, " +
+        [Option('s',"address-start", Required = false, HelpText = "нижняя граница диапазона адресов, " +
             "необязательный параметр, по умолчанию обрабатываются все адреса")]
         public string AddressStart { get; set; }
 
-        [Option("address-mask", Required = false, Default = "0.0.0.0", HelpText = "верхнаяя граница диапазона адресов, " +
+        [Option('m',"address-mask", Required = false, Default = "0.0.0.0", HelpText = "верхнаяя граница диапазона адресов, " +
             " необязательный параметр, по умолчанию обрабатываются все адреса" +
             " Параметр нельзя использовать, если не задан address-start")]
         public string AddressMask { get; set; }
@@ -144,8 +136,7 @@ namespace EffectiveMobile_test
                 DateTime TimeStart = DateConverter.ConvertDate(opts.TimeStart);
                 DateTime TimeEnd = DateConverter.ConvertDate(opts.TimeEnd);
 
-                List<LogEntry> logEntries = new List<LogEntry>(); // По результатам теста, в данном случае List быстрее чем HashSet
-
+                List<LogEntry> logEntries = new List<LogEntry>(); 
                 using (StreamReader reader = new StreamReader(opts.LogFile))
 
                 {
@@ -162,10 +153,7 @@ namespace EffectiveMobile_test
                     }
                 }
 
-
-
                 var filteredEntries = logEntries.Where(e => e.Time >= TimeStart && e.Time <= TimeEnd).GroupBy(e => e.IP).Select(g => new { IP = g.Key, Count = g.Count() });
-
 
                 if (opts.AddressStart != null)
                 {
@@ -181,9 +169,8 @@ namespace EffectiveMobile_test
                     }
                     else return;
                 }
-
-
-
+                
+                // Записываем результат в файл
                 using (StreamWriter writer = new StreamWriter(opts.OutputFile))
                 {
                     foreach (var entry in filteredEntries)
@@ -206,7 +193,7 @@ namespace EffectiveMobile_test
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Неожиданная ошибка: {ex.Message}");
+                Console.WriteLine($"Ошибка: {ex.Message}");
             }
             finally
             {
