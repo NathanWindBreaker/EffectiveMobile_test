@@ -1,4 +1,4 @@
-# EffectiveMobile_test
+# EffectiveMobile_test .NET
 Тестовое задание Effective Mobile
 
 
