@@ -137,7 +137,8 @@ namespace EffectiveMobile_test
                 DateTime TimeEnd = DateConverter.ConvertDate(opts.TimeEnd);
 
                 // Проверяем IP адрес и маску
-                if (opts.AddressStart == null && opts.AddressMask != null) { Console.WriteLine("    Ошибка: Нельзя использовать параметр 'm, address-mask' без 's, adress-start'!"); return; }
+                if (opts.AddressStart == null && opts.AddressMask != null) 
+                { Console.WriteLine("    Ошибка: Нельзя использовать параметр 'm, address-mask' без 's, adress-start'!"); return; }
 
 
                 List<LogEntry> logEntries = new List<LogEntry>(); 
