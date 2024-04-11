@@ -1,12 +1,11 @@
-﻿using CommandLine; // используем библиотеку command line parser
+﻿using CommandLine; 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics; // для измерения скорости выполнения программы
+using System.Diagnostics; 
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Xml;
 
 namespace EffectiveMobile_test
 {
@@ -134,29 +133,6 @@ namespace EffectiveMobile_test
             Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(opts => RunOptions(opts));
         }
 
-        private static void ReadConfigFromFile(string filePath, ref Dictionary<string, string> options)
-        {
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(filePath);
-                XmlNode root = xmlDoc.DocumentElement;
-
-                foreach (XmlNode node in root.ChildNodes)
-                {
-                    if (node.Attributes != null && node.Attributes["name"] != null)
-                    {
-                        string name = node.Attributes["name"].InnerText;
-                        string value = node.InnerText;
-                        options[name] = value;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading configuration file: {ex.Message}");
-            }
-        }
 
         static void RunOptions(Options opts)
         {
